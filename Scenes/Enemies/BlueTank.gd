@@ -13,17 +13,17 @@ var projectile_impact = preload("res://Scenes/SupportScenes/ProjectileImpact.tsc
 func _ready():
 	health_bar.max_value= hp
 	health_bar.value = hp
-	health_bar.set_as_toplevel(true)
 
 func _physics_process(delta):
 	if unit_offset == 1.0:
-		emit_signal("base_damage", base_damage)
-		queue_free()
-	move(delta)
+		set_offset(get_offset() - speed * 10 * delta) # Makes the clients vibrate when there's no path
+		#emit_signal("base_damage", base_damage)
+		#queue_free()
+	else:
+		move(delta)
 	
 func move(delta):
 	set_offset(get_offset() + speed * delta)
-	health_bar.set_position(position - Vector2(30, 30))
 
 func on_hit(damage):
 	impact()

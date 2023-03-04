@@ -4,7 +4,7 @@ onready var hp_bar = get_node("HUD/InfoBar/H/HP")
 onready var hp_bar_tween = get_node("HUD/InfoBar/H/HP/Tween")
 
 func set_tower_preview(tower_type, mouse_position):
-	var drag_tower = load("res://Scenes/Turrets/" + tower_type + ".tscn").instance()
+	var drag_tower = load("res://Scenes/Components/" + tower_type + ".tscn").instance()
 	drag_tower.set_name( "DragTower")
 	drag_tower.modulate = Color("ad54ff3c")
 	

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Blue_Computer_download.png-ee9148e99b260a8cea824e6d55c75d93.stex"
+path="res://.import/serverguard.png-32ac01d31864867145777346487811bd.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Towers/Blue_Computer_download.png"
-dest_files=[ "res://.import/Blue_Computer_download.png-ee9148e99b260a8cea824e6d55c75d93.stex" ]
+source_file="res://Assets/Towers/serverguard.png"
+dest_files=[ "res://.import/serverguard.png-32ac01d31864867145777346487811bd.stex" ]
 
 [params]
 
