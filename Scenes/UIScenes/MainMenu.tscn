@@ -24,20 +24,20 @@ custom_constants/margin_left = 50
 custom_constants/margin_bottom = 50
 
 [node name="VB" type="VBoxContainer" parent="M"]
-margin_left = 730.0
+margin_left = 262.0
 margin_top = 50.0
-margin_right = 1230.0
-margin_bottom = 670.0
+margin_right = 762.0
+margin_bottom = 750.0
 rect_min_size = Vector2( 500, 0 )
-size_flags_horizontal = 8
+size_flags_horizontal = 4
 custom_constants/separation = 35
 alignment = 1
 
 [node name="NewGame" type="TextureButton" parent="M/VB"]
 margin_left = 75.0
-margin_top = 72.0
+margin_top = 112.0
 margin_right = 425.0
-margin_bottom = 147.0
+margin_bottom = 187.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )
@@ -55,9 +55,9 @@ valign = 1
 
 [node name="Settings" type="TextureButton" parent="M/VB"]
 margin_left = 75.0
-margin_top = 182.0
+margin_top = 222.0
 margin_right = 425.0
-margin_bottom = 257.0
+margin_bottom = 297.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )
@@ -75,9 +75,9 @@ valign = 1
 
 [node name="About" type="TextureButton" parent="M/VB"]
 margin_left = 75.0
-margin_top = 292.0
+margin_top = 332.0
 margin_right = 425.0
-margin_bottom = 367.0
+margin_bottom = 407.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )
@@ -94,16 +94,16 @@ align = 1
 valign = 1
 
 [node name="Control" type="Control" parent="M/VB"]
-margin_top = 402.0
+margin_top = 442.0
 margin_right = 500.0
-margin_bottom = 437.0
+margin_bottom = 477.0
 rect_min_size = Vector2( 0, 35 )
 
 [node name="Quit" type="TextureButton" parent="M/VB"]
 margin_left = 75.0
-margin_top = 472.0
+margin_top = 512.0
 margin_right = 425.0
-margin_bottom = 547.0
+margin_bottom = 587.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )

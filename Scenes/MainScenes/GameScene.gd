@@ -51,6 +51,12 @@ func _input(event):
 		verify_and_build()
 		cancel_build_mode()
 
+func _unhandled_input(event):
+	if not event is InputEventMouseButton:
+		return
+	if event.button_index != BUTTON_LEFT or not event.pressed:
+		return
+
 func _on_PopupMenu_id_pressed(id):
 	match id:
 		PopupIds.popup_upcomp:
@@ -79,7 +85,11 @@ func start_next_wave():
 	spawn_enemies(wave_data)
 	
 func retrieve_wave_data():
-	var wave_data = [["BlueTank", 3.0], ["BlueTank", 0.1], ["BlueTank", 3.0], ["BlueTank", 0.1], ["BlueTank", 3.0], ["BlueTank", 0.1]] 
+	var rng = RandomNumberGenerator.new()
+	var wave_data = []
+	for i in range(5):
+		wave_data.append(["PhoneClient", rng.randf_range(0.00, 1.00)])
+	
 	current_wave += 1
 	enemies_in_wave = wave_data.size()
 	return wave_data
@@ -132,6 +142,7 @@ func verify_and_build():
 		new_tower.category = GameData.tower_data[build_type]["category"]
 		map_node.get_node("Components").add_child(new_tower, true) 
 		map_node.get_node("Props").set_cellv(build_tile, 5)
+		map_node.get_node("Path").curve.add_point(build_location)
 		## deduct cash 
 		## update cash label
 
