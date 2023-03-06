@@ -88,18 +88,18 @@ func retrieve_wave_data():
 	var rng = RandomNumberGenerator.new()
 	var wave_data = []
 	for i in range(5):
-		wave_data.append(["PhoneClient", rng.randf_range(0.00, 1.00)])
-	
+		wave_data.append(["PhoneClient", rng.randf_range(0.10, 2.00)])
+	print(wave_data)
 	current_wave += 1
 	enemies_in_wave = wave_data.size()
 	return wave_data
 	
 func spawn_enemies(wave_data):
-	for i in wave_data:
-		var new_enemy = load("res://Scenes/Enemies/" + i[0] + ".tscn").instance()
+	for enemy in wave_data:
+		var new_enemy = load("res://Scenes/Enemies/" + enemy[0] + ".tscn").instance()
 		#new_enemy.connect("base_damage", self, "on_base_damage")
 		map_node.get_node("Path").add_child(new_enemy, true) 
-		yield(get_tree().create_timer(i[1]), "timeout")
+		yield(get_tree().create_timer(enemy[1]), "timeout")
 
 ##
 ##	Building Functions

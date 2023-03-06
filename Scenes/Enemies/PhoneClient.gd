@@ -1,7 +1,7 @@
 extends PathFollow2D
 
 signal base_damage(damage)
-var speed = 0
+var speed = 150
 var hp = 1000
 var base_damage = 21
 onready var health_bar = $KinematicBody2D/HealthBar
@@ -11,23 +11,26 @@ var projectile_impact = preload("res://Scenes/SupportScenes/ProjectileImpact.tsc
 func _ready():
 	health_bar.max_value= hp
 	health_bar.value = hp
+	add_to_group("phoneclients")
 	
 func _physics_process(delta):
-	if unit_offset == 1.0:
-		set_offset(get_offset())
-	else:
-		move(delta)
+	var phoneclients = get_tree().get_nodes_in_group("phoneclients")
+	for i in range(phoneclients.size()):
+		if phoneclients[i].position == position:
+			var distance = phoneclients[i].position.distance_to(phoneclients[i-1].position)
+			if distance < 40 and distance != 0: return
+				
+	move(delta)
 	
 func move(delta):
 	set_offset(get_offset() + speed * delta)
-	
 
 func on_hit(damage):
 	impact()
 	hp -= damage
 	health_bar.value = hp
 	if hp <= 0:
-		return
+		print("u dead")
 
 func impact():
 	randomize()

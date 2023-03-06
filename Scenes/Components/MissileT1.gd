@@ -1,1 +1,1 @@
-extends "res://Scenes/Turrets/Turrets.gd"
+extends "res://Scenes/Components/Turrets.gd"

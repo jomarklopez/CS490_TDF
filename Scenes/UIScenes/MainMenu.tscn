@@ -1,9 +1,17 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Assets/UI/Buttons/blue_button05.png" type="Texture" id=1]
-[ext_resource path="res://Assets/UI/Art/mm_background.png" type="Texture" id=2]
+[ext_resource path="res://Assets/UI/Art/city_bg.png" type="Texture" id=2]
 [ext_resource path="res://Assets/UI/Buttons/blue_button03.png" type="Texture" id=3]
 [ext_resource path="res://Resources/Fonts/kfn_40_o1.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Assets/Fonts/Kenney Future Narrow.ttf" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 100
+outline_color = Color( 0, 0, 0, 0.235294 )
+use_filter = true
+extra_spacing_char = 8
+font_data = ExtResource( 5 )
 
 [node name="MainMenu" type="Control"]
 anchor_right = 1.0
@@ -15,6 +23,15 @@ anchor_bottom = 1.0
 texture = ExtResource( 2 )
 expand = true
 
+[node name="Title" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 80.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
+custom_fonts/font = SubResource( 1 )
+text = "Startup TD"
+align = 1
+
 [node name="M" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,20 +41,19 @@ custom_constants/margin_left = 50
 custom_constants/margin_bottom = 50
 
 [node name="VB" type="VBoxContainer" parent="M"]
-margin_left = 262.0
-margin_top = 50.0
-margin_right = 762.0
-margin_bottom = 750.0
+margin_left = 50.0
+margin_top = 252.0
+margin_right = 974.0
+margin_bottom = 547.0
 rect_min_size = Vector2( 500, 0 )
-size_flags_horizontal = 4
+size_flags_vertical = 4
 custom_constants/separation = 35
 alignment = 1
 
 [node name="NewGame" type="TextureButton" parent="M/VB"]
-margin_left = 75.0
-margin_top = 112.0
-margin_right = 425.0
-margin_bottom = 187.0
+margin_left = 287.0
+margin_right = 637.0
+margin_bottom = 75.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )
@@ -54,10 +70,10 @@ align = 1
 valign = 1
 
 [node name="Settings" type="TextureButton" parent="M/VB"]
-margin_left = 75.0
-margin_top = 222.0
-margin_right = 425.0
-margin_bottom = 297.0
+margin_left = 287.0
+margin_top = 110.0
+margin_right = 637.0
+margin_bottom = 185.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )
@@ -73,37 +89,18 @@ text = "Settings"
 align = 1
 valign = 1
 
-[node name="About" type="TextureButton" parent="M/VB"]
-margin_left = 75.0
-margin_top = 332.0
-margin_right = 425.0
-margin_bottom = 407.0
-rect_min_size = Vector2( 350, 75 )
-size_flags_horizontal = 4
-texture_normal = ExtResource( 3 )
-texture_pressed = ExtResource( 1 )
-expand = true
-
-[node name="Label" type="Label" parent="M/VB/About"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
-custom_fonts/font = ExtResource( 4 )
-text = "About"
-align = 1
-valign = 1
-
 [node name="Control" type="Control" parent="M/VB"]
-margin_top = 442.0
-margin_right = 500.0
-margin_bottom = 477.0
+visible = false
+margin_top = 220.0
+margin_right = 924.0
+margin_bottom = 255.0
 rect_min_size = Vector2( 0, 35 )
 
 [node name="Quit" type="TextureButton" parent="M/VB"]
-margin_left = 75.0
-margin_top = 512.0
-margin_right = 425.0
-margin_bottom = 587.0
+margin_left = 287.0
+margin_top = 220.0
+margin_right = 637.0
+margin_bottom = 295.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )

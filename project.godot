@@ -20,7 +20,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="BasicTowerDefense"
+config/name="CS490TDF"
 run/main_scene="res://SceneHandler.tscn"
 config/icon="res://icon.png"
 
