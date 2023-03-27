@@ -37,3 +37,13 @@ nine_patch_stretch = true
 
 [node name="Impact" type="Position2D" parent="."]
 position = Vector2( -15, -15 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = -56.0
+margin_top = -86.0
+margin_right = 56.0
+margin_bottom = -49.0
+text = "Travelling"
+align = 1
+valign = 2
+autowrap = true

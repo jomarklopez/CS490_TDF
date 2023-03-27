@@ -13,7 +13,7 @@ var build_type
 var current_wave = 0
 var enemies_in_wave = 0
 
-var base_health = 50
+var base_health = 100
 
 var _last_mouse_position
 
@@ -24,12 +24,17 @@ enum PopupIds {
 
 onready var _pm = $UI/HUD/PopupMenu
 var componentsmenu = PopupMenu.new()
+var components = ["Web Server", "Database"]
 
 func _ready():
 	map_node = get_node("Map1") ## Turn this into variable based on selected map
 	
+	for i in get_tree().get_nodes_in_group("build_buttons"):
+		i.connect("pressed", self, "initiate_build_mode", [i.get_name()])
+	
 	componentsmenu.set_name("SubmenuComponents")
-	componentsmenu.add_item("Gateway")
+	for comp in components: 
+		componentsmenu.add_item(comp)
 	_pm.add_child(componentsmenu)
 	_pm.add_submenu_item("Add New Components ", "SubmenuComponents")
 	_pm.add_item("Upgrade Component", PopupIds.popup_upcomp)
@@ -65,12 +70,8 @@ func _on_PopupMenu_id_pressed(id):
 			print("Destroy Component pressed")
 
 func _on_ComponentsMenu_id_pressed(id):
-	match id:
-		PopupIds.popup_upcomp:
-			if build_mode == false:
-				initiate_build_mode("Gateway")
-		PopupIds.popup_destcomp:
-			print(id)
+	if build_mode == false:
+		initiate_build_mode(components[id].replace(" ", ""))
 			
 func _process(delta):
 	if build_mode:
@@ -89,7 +90,7 @@ func retrieve_wave_data():
 	var wave_data = []
 	for i in range(5):
 		wave_data.append(["PhoneClient", rng.randf_range(0.10, 2.00)])
-	print(wave_data)
+
 	current_wave += 1
 	enemies_in_wave = wave_data.size()
 	return wave_data
@@ -97,7 +98,7 @@ func retrieve_wave_data():
 func spawn_enemies(wave_data):
 	for enemy in wave_data:
 		var new_enemy = load("res://Scenes/Enemies/" + enemy[0] + ".tscn").instance()
-		#new_enemy.connect("base_damage", self, "on_base_damage")
+		new_enemy.connect("base_damage", self, 'on_base_damage')
 		map_node.get_node("Path").add_child(new_enemy, true) 
 		yield(get_tree().create_timer(enemy[1]), "timeout")
 
@@ -139,10 +140,9 @@ func verify_and_build():
 		new_tower.position = build_location
 		new_tower.built = true
 		new_tower.type = build_type
-		new_tower.category = GameData.tower_data[build_type]["category"]
+		new_tower.category = GameData.component_data[build_type]["category"]
 		map_node.get_node("Components").add_child(new_tower, true) 
 		map_node.get_node("Props").set_cellv(build_tile, 5)
-		map_node.get_node("Path").curve.add_point(build_location)
 		## deduct cash 
 		## update cash label
 

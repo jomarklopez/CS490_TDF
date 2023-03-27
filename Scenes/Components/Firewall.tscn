@@ -1,0 +1,67 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Assets/Components/Firewall.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Node2D
+
+var enemy_array = []
+var built = false
+var enemy
+var closed = true
+
+func _ready():
+	pass 
+
+func _on_Area2D_body_entered(body):
+	enemy = body.get_parent()
+	body.get_parent().blocked = true
+
+func _on_Area2D_body_exited(body):
+	pass
+
+func _on_Area2D_input_event(viewport, event, shape_idx):
+	if event.is_pressed() and event.button_index == BUTTON_LEFT:
+		if closed:
+			hide()
+			queue_free()
+			closed = !closed
+			if enemy:
+				enemy.blocked = false
+			
+		
+"
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 4, 25 )
+
+[node name="Firewall" type="Node2D"]
+script = SubResource( 2 )
+
+[node name="Wall" type="Area2D" parent="."]
+position = Vector2( 0, 50 )
+
+[node name="Firewall" type="Sprite" parent="Wall"]
+position = Vector2( 0, -25 )
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall"]
+position = Vector2( 0, -25 )
+shape = SubResource( 1 )
+
+[node name="Wall2" type="Area2D" parent="."]
+position = Vector2( 0, -50 )
+rotation = 3.14159
+
+[node name="Firewall" type="Sprite" parent="Wall2"]
+position = Vector2( 0, -25 )
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2"]
+position = Vector2( 0, -25 )
+shape = SubResource( 1 )
+
+[connection signal="body_entered" from="Wall" to="." method="_on_Area2D_body_entered"]
+[connection signal="input_event" from="Wall" to="." method="_on_Area2D_input_event"]
+[connection signal="body_entered" from="Wall2" to="." method="_on_Area2D_body_entered"]
+[connection signal="input_event" from="Wall2" to="." method="_on_Area2D_input_event"]

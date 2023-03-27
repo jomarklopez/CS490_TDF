@@ -6,18 +6,23 @@ var enemy_array = []
 var built = false
 var enemy
 var ready = true
+var process_complete = true
+onready var label = $Label
 
 func _ready():
 	if built:
-		self.get_node("Range/CollisionShape2D").get_shape().radius = 0.5 * GameData.tower_data[type]["range"]
+		self.get_node("Range/CollisionShape2D").get_shape().radius = 0.5 * GameData.component_data[type]["range"]
 
 func _physics_process(delta):
 	if enemy_array.size() != 0 and built:
 		select_enemy()
-		if not get_node("AnimationPlayer").is_playing():
-			turn()
-		if ready:
-			fire()
+		#if not get_node("AnimationPlayer").is_playing():
+		#	turn()
+		if ready and enemy.process < 100:
+			if type == "WebServerT1" and !enemy.request_processed:
+				fire(30)
+			elif type == "DatabaseT1" and !enemy.dbquery_processed:
+				fire(60)
 	else:
 		enemy = null
 	
@@ -33,14 +38,17 @@ func select_enemy():
 		var enemy_index = enemy_progress_array.find(max_offset)
 		enemy = enemy_array[enemy_index]
 
-func fire():
+func fire(max_process):
+	label.text = "pew"
 	ready = false
-	if category == "Projectile":
-		fire_gun()
-	elif category == "Missile":
-		fire_missile()
-	enemy.on_hit(GameData.tower_data[type]["damage"])
-	yield(get_tree().create_timer(GameData.tower_data[type]["rof"]), "timeout")
+	#if category == "Projectile":
+	#	fire_gun()
+	#elif category == "Missile":
+	#	fire_missile()
+		
+	enemy.on_hit(GameData.component_data[type]["damage"], type, max_process)
+	yield(get_tree().create_timer(GameData.component_data[type]["rof"]), "timeout")
+	label.text = ""
 	ready = true
 
 func fire_gun():

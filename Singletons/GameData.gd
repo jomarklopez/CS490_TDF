@@ -1,16 +1,16 @@
 extends Node
 
-var tower_data = {
-	"GatewayT1": {
-		"damage": 100,
-		"rof": 1,
-		"range": 350,
+var component_data = {
+	"WebServerT1": {
+		"damage": 1,
+		"rof": 0.01,
+		"range": 250,
 		"category": "Projectile"
 	},
-	"MissileT1": {
-		"damage": 100,
-		"rof": 3,
-		"range": 550,
-		"category": "Missile"
+	"DatabaseT1": {
+		"damage": 1,
+		"rof": 0.01,
+		"range": 250,
+		"category": "Projectile"
 	}
 }
