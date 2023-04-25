@@ -29,7 +29,7 @@ anchor_bottom = 1.0
 margin_top = 80.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
 custom_fonts/font = SubResource( 1 )
-text = "Startup TD"
+text = "SCALE RUSH"
 align = 1
 
 [node name="M" type="MarginContainer" parent="."]
@@ -42,9 +42,9 @@ custom_constants/margin_bottom = 50
 
 [node name="VB" type="VBoxContainer" parent="M"]
 margin_left = 50.0
-margin_top = 252.0
+margin_top = 307.0
 margin_right = 974.0
-margin_bottom = 547.0
+margin_bottom = 492.0
 rect_min_size = Vector2( 500, 0 )
 size_flags_vertical = 4
 custom_constants/separation = 35
@@ -70,6 +70,7 @@ align = 1
 valign = 1
 
 [node name="Settings" type="TextureButton" parent="M/VB"]
+visible = false
 margin_left = 287.0
 margin_top = 110.0
 margin_right = 637.0
@@ -98,9 +99,9 @@ rect_min_size = Vector2( 0, 35 )
 
 [node name="Quit" type="TextureButton" parent="M/VB"]
 margin_left = 287.0
-margin_top = 220.0
+margin_top = 110.0
 margin_right = 637.0
-margin_bottom = 295.0
+margin_bottom = 185.0
 rect_min_size = Vector2( 350, 75 )
 size_flags_horizontal = 4
 texture_normal = ExtResource( 3 )

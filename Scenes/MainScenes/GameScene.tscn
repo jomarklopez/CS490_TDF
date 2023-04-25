@@ -63,7 +63,7 @@ margin_bottom = 60.0
 rect_min_size = Vector2( 110, 60 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
 custom_fonts/font = ExtResource( 11 )
-text = "100"
+text = "25"
 align = 2
 valign = 1
 
@@ -71,7 +71,7 @@ valign = 1
 margin_left = 238.0
 margin_right = 298.0
 margin_bottom = 60.0
-rect_min_size = Vector2( 60, 60 )
+rect_min_size = Vector2( 60, 0 )
 size_flags_horizontal = 0
 texture = ExtResource( 13 )
 expand = true
@@ -178,6 +178,27 @@ margin_bottom = -15.0
 texture = ExtResource( 3 )
 expand = true
 
+[node name="Tooltip" type="Control" parent="UI/HUD"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="UI/HUD/Tooltip"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+color = Color( 0, 0, 0, 0.54902 )
+
+[node name="Label" type="Label" parent="UI/HUD/Tooltip"]
+visible = false
+margin_left = 1.0
+margin_right = 41.0
+margin_bottom = 14.0
+text = "asdasd"
+
 [connection signal="id_pressed" from="UI/HUD/PopupMenu" to="." method="_on_PopupMenu_id_pressed"]
 [connection signal="pressed" from="UI/HUD/GameControls/PausePlay" to="UI" method="_on_PausePlay_pressed"]
 [connection signal="pressed" from="UI/HUD/GameControls/SpeedUp" to="UI" method="_on_SpeedUp_pressed"]
+[connection signal="mouse_entered" from="UI/HUD/BuildBar/WebServer" to="." method="_on_WebServer_mouse_entered"]
+[connection signal="mouse_exited" from="UI/HUD/BuildBar/WebServer" to="." method="_on_WebServer_mouse_exited"]
+[connection signal="mouse_entered" from="UI/HUD/BuildBar/Database" to="." method="_on_Database_mouse_entered"]
+[connection signal="mouse_exited" from="UI/HUD/BuildBar/Database" to="." method="_on_Database_mouse_exited"]
