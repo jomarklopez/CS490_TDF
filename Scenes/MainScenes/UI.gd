@@ -2,6 +2,9 @@ extends CanvasLayer
 
 onready var hp_bar = get_node("HUD/InfoBar/H/HP")
 onready var hp_bar_tween = get_node("HUD/InfoBar/H/HP/Tween")
+onready var money_label = get_node("HUD/InfoBar/H/Money")
+onready var score_label = get_node("HUD/HBoxContainer/Label")
+onready var pauseplay_button:TextureButton = get_node("HUD/GameControls/PausePlay")
 
 func set_tower_preview(tower_type, mouse_position):
 	var drag_tower = load("res://Scenes/Components/" + tower_type + ".tscn").instance()
@@ -36,10 +39,9 @@ func update_tower_preview(new_position, color):
 func _on_PausePlay_pressed():
 	if get_parent().build_mode:
 		get_parent().cancel_build_mode()
-		
 	if get_tree().is_paused():
 		get_tree().paused = false
-	elif get_parent().current_wave == 0:
+	elif !get_parent().wave_start:
 		get_parent().current_wave += 1
 		get_parent().start_next_wave()
 	else:
@@ -54,6 +56,10 @@ func _on_SpeedUp_pressed():
 	else:
 		Engine.set_time_scale(2.0)
 
+func _on_RestartLevel_pressed():
+	# TODO change to repeat level instead
+	get_tree().change_scene("res://Scenes/MainScenes/GameScene.tscn")
+	
 func update_health_bar(base_health):
 	hp_bar_tween.interpolate_property(hp_bar, 'value', hp_bar.value, base_health, 0.1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
 	
@@ -64,5 +70,11 @@ func update_health_bar(base_health):
 		hp_bar.set_tint_progress("elbe32") #0range
 	else:
 		hp_bar.set_tint_progress("ellele") #Red
+
+func update_points_label(score):
+	score_label.text = str(score)
+
+func update_money_label(money):
+	money_label.text = str(money)
 
 

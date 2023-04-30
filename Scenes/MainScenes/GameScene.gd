@@ -13,12 +13,15 @@ var build_type
 var tower_type
 
 var connect_linepreview:Line2D
+var wave_start = false
 var current_wave = 0
 var enemies_in_wave = 0
 var pointer_normal = load("res://Assets/UI/cursor_pointer3D_shadow.png")
 var pointer_connect = load("res://Assets/UI/blue_boxTick.png")
 
 var base_health = 100
+var player_score = 0
+var player_money = 15
 
 var component_hovered:TextureButton
 var tooltip_label:Label
@@ -45,6 +48,7 @@ func _ready():
 	var	path_node:Path2D = map_node.get_node("InitPath")
 	var	line_node:Line2D = map_node.get_node("Line2D")
 	line_node.points = path_node.curve.get_baked_points()
+	line_node.width = 5
 	line_node.set_default_color(Color("ffffff"))
 	
 	for i in get_tree().get_nodes_in_group("build_buttons"):
@@ -61,7 +65,7 @@ func _ready():
 	componentsmenu.connect("id_pressed", self, "_on_ComponentsMenu_id_pressed")
 	# Create a Line2D node
 	connect_linepreview = Line2D.new()
-	connect_linepreview.width = 10
+	connect_linepreview.width = 5
 	connect_linepreview.default_color = (Color("ffffff"))
 	connect_linepreview.z_index = 1
 	get_tree().get_root().add_child(connect_linepreview)
@@ -78,9 +82,6 @@ func _input(event):
 		_last_mouse_position = get_global_mouse_position()
 		connect_mode = true
 		initiate_connect_mode()
-		# right click menu
-#		_last_mouse_position = get_global_mouse_position()
-#		_pm.popup(Rect2(_last_mouse_position.x, _last_mouse_position.y, _pm.rect_size.x, _pm.rect_size.y))
 		
 	if event is InputEventMouseButton and event.is_pressed() and event.button_index == BUTTON_RIGHT and build_mode == true:
 		cancel_build_mode()
@@ -114,9 +115,6 @@ func _on_ComponentsMenu_id_pressed(id):
 	if build_mode == false:
 		initiate_build_mode(components[id].replace(" ", ""))
 
-
-	
-
 func _process(delta):
 	if build_mode:
 		update_tower_preview()
@@ -132,6 +130,14 @@ func _process(delta):
 		tooltip_bg.rect_position = tooltip_label.get_position() - Vector2(5, 2.5) # Position the container behind the label
 	
 	components_group = get_tree().get_nodes_in_group("components_group")
+	# WAVE CLEAR
+	if get_tree().get_nodes_in_group("phoneclients").size() == 0 and wave_start:
+		get_node("UI/HUD/GameControls/PausePlay").pressed = false
+		wave_start = false
+		player_money += 2.5
+		get_node("UI").update_money_label(player_money)
+		
+		
 ##
 ##	Wave Functions
 ##
@@ -143,7 +149,7 @@ func start_next_wave():
 func retrieve_wave_data():
 	var rng = RandomNumberGenerator.new()
 	var wave_data = []
-	for i in range(5):
+	for i in range(current_wave*5):
 		wave_data.append(["PhoneClient", rng.randf_range(0.10, 0.80)])
 
 	current_wave += 1
@@ -153,11 +159,16 @@ func retrieve_wave_data():
 func spawn_enemies(wave_data):
 	for enemy_data in wave_data:
 		var new_enemy = load("res://Scenes/Enemies/" + enemy_data[0] + ".tscn").instance()
-		new_enemy.connect("base_damage", self, 'on_base_damage')
+		new_enemy.connect("score_modify", self, 'on_score_modify')
 		map_node.get_node("InitPath").add_child(new_enemy, true) 
 		new_enemy.set_z_index(2)
+		var bol = true
+		if randi() % 2:
+			bol = false    
+		new_enemy.data_read_en = bol
 		yield(get_tree().create_timer(enemy_data[1]), "timeout")
-
+	wave_start = true
+	
 ##
 ##	Building Functions
 ##
@@ -191,20 +202,22 @@ func cancel_build_mode():
 	
 	
 func verify_and_build():
-	if build_valid:
+	var cost = GameData.component_data[build_type]["cost"]
+	if build_valid and player_money >= cost:
 		## Test to verify player has enough cash
 		var new_tower = load( "res://Scenes/Components/" + build_type + ".tscn").instance()
 		new_tower.position = build_location
 		new_tower.built = true
 		new_tower.type = build_type
-		new_tower.category = GameData.component_data[build_type]["category"]
 		new_tower.add_to_group(tower_type)
 		print(" added ", tower_type, " to group. Total built: ", get_tree().get_nodes_in_group(tower_type).size()+1)
 		new_tower.add_to_group("components_group")
 		map_node.get_node("Components").add_child(new_tower, true) 
 		map_node.get_node("Props").set_cellv(build_tile, 5)
 		## deduct cash 
-		## update cash label
+		player_money -= cost
+		get_node("UI").update_money_label(player_money)
+		
 
 ##
 ##	CONNECT FUNCTIONS
@@ -252,6 +265,7 @@ func build_path2d(source:Node2D, destination:Node2D):
 	var new_line = Line2D.new()
 	var line_name:String = source.name + "_" + destination.name + "_Line2D"
 	new_line.set_name(line_name)
+	new_line.width = 5
 	new_line.set_default_color(Color("ffffff"))
 	
 	# Add the two points to the Path2D node
@@ -268,9 +282,6 @@ func build_path2d(source:Node2D, destination:Node2D):
 	
 	print("Connected ", source.name, " to ", destination.name)
 	paths.append([source.name, destination.name])
-	print("Existing paths are ")
-	for i in range(len(paths)):
-		print("SOURCE:", paths[i][0], " DESTINATION: ",  paths[i][1])
 	
 	
 func cancel_connect_mode():
@@ -282,12 +293,9 @@ func cancel_connect_mode():
 	if connect_linepreview:
 		connect_linepreview.points = []
 
-func on_base_damage(damage):
-	base_health -= damage
-	if base_health <= 0:
-		emit_signal("game_finished", false)
-	else:
-		get_node("UI").update_health_bar(base_health)
+func score_modify(score):
+	player_score += score
+	get_node("UI").update_points_label(player_score)
 
 func show_tooltip(text):
 	component_hovered = get_node("UI/HUD/BuildBar/WebServer")
@@ -307,15 +315,16 @@ func hide_tooltip():
 	tooltip_bg.visible = false
 
 func _on_WebServer_mouse_entered():
-	show_tooltip("Load Balancer - Directs traffic to available servers")
+	show_tooltip("Load Balancer($10) - Directs traffic to available servers")
 	
 func _on_WebServer_mouse_exited():
 	hide_tooltip()
 
 
 func _on_Database_mouse_entered():
-	show_tooltip("Server - Directs traffic to files/database")
+	show_tooltip("Server($5) - Directs traffic to files/database")
 
 
 func _on_Database_mouse_exited():
 	hide_tooltip()
+

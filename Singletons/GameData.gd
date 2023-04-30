@@ -5,18 +5,17 @@ var component_data = {
 		"damage": 2,
 		"rof": 0.7,
 		"range": 20,
-		"category": "Projectile"
+		"cost": 10
 	},
 	"DatabaseT1": {
 		"damage": 2,
 		"rof": 2,
 		"range": 20,
-		"category": "Projectile"
+		"cost": 5
 	},
 	"FileGreen": {
 		"damage": 2,
 		"rof": 0.5,
 		"range": 5,
-		"category": "Projectile"
 	}
 }

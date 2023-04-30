@@ -16,7 +16,7 @@ func _ready():
 func _on_Area2D_body_entered(body):
 	enemy = body.get_parent()
 	if !body.get_parent().reverse and enemy.lb_forward_prop:
-		body.get_parent().firewall_blocked = true
+		body.get_parent().blocked = true
 
 func _on_Area2D_body_exited(body):
 	pass
