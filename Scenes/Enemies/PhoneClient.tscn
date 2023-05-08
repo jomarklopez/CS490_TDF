@@ -37,9 +37,7 @@ tint_under = Color( 0.207843, 0.207843, 0.207843, 1 )
 tint_progress = Color( 0, 0.760784, 0.0117647, 1 )
 nine_patch_stretch = true
 
-[node name="Impact" type="Position2D" parent="."]
-
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="KinematicBody2D"]
 margin_left = -56.0
 margin_top = -35.0
 margin_right = 56.0
@@ -49,7 +47,10 @@ align = 1
 valign = 2
 autowrap = true
 
+[node name="Impact" type="Position2D" parent="."]
+
 [node name="OperationIcon" type="TextureRect" parent="."]
+visible = false
 margin_left = -8.0
 margin_top = 17.0
 margin_right = 8.0

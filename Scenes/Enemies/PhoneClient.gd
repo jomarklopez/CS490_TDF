@@ -1,6 +1,6 @@
 extends PathFollow2D
 
-signal point_modify(point)
+signal score_modify(score)
 
 var speed = 150
 var process = 0
@@ -11,6 +11,7 @@ var lb_forward_prop = false
 var lb_backward_prop = false
 var server_forward_prop = false
 var server_backward_prop = false
+var gateway_backward_prop = false
 var data_read_en = false
 var data_read = false
 var data_write = false
@@ -19,7 +20,7 @@ var operation = ""
 var source_component
 
 onready var process_bar = $KinematicBody2D/HealthBar
-onready var label = $Label
+onready var label = $KinematicBody2D/Label
 onready var sprite = $KinematicBody2D/Sprite
 onready var impact_area = get_node("Impact")
 var projectile_impact = preload("res://Scenes/SupportScenes/ProjectileImpact.tscn")
@@ -27,7 +28,7 @@ var projectile_impact = preload("res://Scenes/SupportScenes/ProjectileImpact.tsc
 onready var timer := Timer.new()
 var time_start = 0
 var time_now = 0
-var timeout = 10
+var timeout = 2
 var is_timeout = false
 
 var main_node
@@ -63,11 +64,11 @@ func _on_Timer_timeout():
 func _physics_process(delta):
 	
 	if data_read_en:
-		#operation = "READ" 
+		operation = "READ" 
 		op_icon.flip_v = true
 	else:
 		op_icon.flip_v = false
-		#operation = "WRITE"
+		operation = "WRITE"
 		
 	var phoneclients = get_tree().get_nodes_in_group("phoneclients")
 	
@@ -86,12 +87,21 @@ func _physics_process(delta):
 			else:
 				waiting = false
 
-	if data_read and lb_backward_prop and unit_offset == 1.0:
-		emit_signal("point_modify", 1)
+	if data_read and gateway_backward_prop and unit_offset == 1.0:
+		remove_from_group("phoneclients")
+		if !is_timeout:
+			emit_signal("score_modify", 1)
+		else:
+			emit_signal("score_modify", 0.25)
 		on_destroy()
 		
 	if data_write: 
-		emit_signal("point_modify", 1)
+		remove_from_group("phoneclients")
+		if !is_timeout:
+			emit_signal("score_modify", 1)
+		else:
+			emit_signal("score_modify", 0.25)
+			
 		on_destroy()
 		
 	if !blocked and !waiting:
@@ -115,21 +125,7 @@ func on_hit(damage, component, max_process):
 	if process < 100:
 		print("Setting blocked to tru form on hit")
 		
-	#print(process, " last hit by ", component, " and process is ", max_process)
 	process_bar.value = process
-#	
-#	if process == max_process:
-#		print("process_complete now resetting")
-#		label.text = "Done Processing"
-#		hit_blocked = false
-#		if component == "WebServerT1":
-#			request_processed = true
-#		elif component == "DatabaseT1":
-#			dbquery_processed = true
-#		yield(get_tree().create_timer(0.5), "timeout")
-#		label.text = "Travelling"
-		
-
 func impact():
 	randomize()
 	var x_pos = randi() % 31
@@ -142,4 +138,3 @@ func impact():
 
 func on_destroy():
 	queue_free()
-	remove_from_group("phoneclients")
