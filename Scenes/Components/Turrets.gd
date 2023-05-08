@@ -121,7 +121,9 @@ func enqueue_enemy():
 				load_balancer_idx += 1
 			var db_num = load_balancer_idx
 			var lb_path:String = path_builder(name, "DatabaseT" + str(db_num))
-			
+			if map_node.get_node(lb_path) == null:
+				return
+				
 			map_node.get_node(lb_path).add_child(enemy)
 			enemy.lb_forward_prop = true
 			enemy.blocked = false

@@ -29,7 +29,7 @@ var component_data = {
 var level_data = {
 	0: {
 		"wave_number": 1,
-		"player_money": 20
+		"player_money": 5
 	},
 	1: {
 		"wave_number": 2,
