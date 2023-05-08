@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Assets/UI/Buttons/blue_button05.png" type="Texture" id=1]
 [ext_resource path="res://Assets/UI/Art/city_bg.png" type="Texture" id=2]
 [ext_resource path="res://Assets/UI/Buttons/blue_button03.png" type="Texture" id=3]
 [ext_resource path="res://Resources/Fonts/kfn_40_o1.tres" type="DynamicFont" id=4]
 [ext_resource path="res://Assets/Fonts/Kenney Future Narrow.ttf" type="DynamicFontData" id=5]
-[ext_resource path="res://Scenes/UIScenes/GridContainer.tscn" type="PackedScene" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 100
@@ -117,63 +116,3 @@ custom_fonts/font = ExtResource( 4 )
 text = "Quit"
 align = 1
 valign = 1
-
-[node name="LevelMenu" type="MarginContainer" parent="."]
-visible = false
-margin_top = 50.0
-margin_right = 1024.0
-margin_bottom = 800.0
-custom_constants/margin_right = 20
-custom_constants/margin_top = 20
-custom_constants/margin_left = 20
-custom_constants/margin_bottom = 20
-
-[node name="VBoxContainer" type="VBoxContainer" parent="LevelMenu"]
-margin_left = 20.0
-margin_top = 152.0
-margin_right = 1004.0
-margin_bottom = 597.0
-size_flags_vertical = 4
-custom_constants/separation = 50
-alignment = 2
-
-[node name="SelectTitle" type="Label" parent="LevelMenu/VBoxContainer"]
-margin_right = 984.0
-margin_bottom = 45.0
-custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
-custom_colors/font_color_shadow = Color( 0.243137, 0.243137, 0.243137, 1 )
-custom_fonts/font = ExtResource( 4 )
-text = "LEVEL SELECT"
-align = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="LevelMenu/VBoxContainer"]
-margin_top = 95.0
-margin_right = 984.0
-margin_bottom = 445.0
-size_flags_vertical = 2
-
-[node name="BackButton" type="TextureButton" parent="LevelMenu/VBoxContainer/HBoxContainer"]
-margin_bottom = 350.0
-size_flags_horizontal = 2
-expand = true
-stretch_mode = 5
-
-[node name="ClipControl" type="Control" parent="LevelMenu/VBoxContainer/HBoxContainer"]
-margin_left = 137.0
-margin_right = 847.0
-margin_bottom = 350.0
-rect_min_size = Vector2( 710, 350 )
-
-[node name="Levels" parent="LevelMenu/VBoxContainer/HBoxContainer/ClipControl" instance=ExtResource( 6 )]
-margin_left = -1.0
-margin_top = -3.0
-margin_right = 709.0
-margin_bottom = 347.0
-
-[node name="NextButton" type="TextureButton" parent="LevelMenu/VBoxContainer/HBoxContainer"]
-margin_left = 851.0
-margin_right = 984.0
-margin_bottom = 350.0
-size_flags_horizontal = 3
-expand = true
-stretch_mode = 5

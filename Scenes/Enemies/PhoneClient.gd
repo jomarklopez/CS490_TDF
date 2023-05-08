@@ -1,6 +1,6 @@
 extends PathFollow2D
 
-signal score_modify(score)
+signal point_modify(point)
 
 var speed = 150
 var process = 0
@@ -11,7 +11,6 @@ var lb_forward_prop = false
 var lb_backward_prop = false
 var server_forward_prop = false
 var server_backward_prop = false
-var gateway_backward_prop = false
 var data_read_en = false
 var data_read = false
 var data_write = false
@@ -28,7 +27,7 @@ var projectile_impact = preload("res://Scenes/SupportScenes/ProjectileImpact.tsc
 onready var timer := Timer.new()
 var time_start = 0
 var time_now = 0
-var timeout = 3
+var timeout = 10
 var is_timeout = false
 
 var main_node
@@ -39,6 +38,7 @@ func _ready():
 	
 	process_bar.max_value = 100
 	process_bar.value = process
+	add_to_group("phoneclients")
 	
 	time_start = OS.get_unix_time()
 	add_child(timer)
@@ -86,15 +86,13 @@ func _physics_process(delta):
 			else:
 				waiting = false
 
-	if data_read and gateway_backward_prop and unit_offset == 1.0:
+	if data_read and lb_backward_prop and unit_offset == 1.0:
+		emit_signal("point_modify", 1)
 		on_destroy()
-		remove_from_group("phoneclients")
-		emit_signal("score_modify", 1)
 		
 	if data_write: 
+		emit_signal("point_modify", 1)
 		on_destroy()
-		remove_from_group("phoneclients")
-		emit_signal("score_modify", 1)
 		
 	if !blocked and !waiting:
 		timer.stop()
@@ -117,7 +115,20 @@ func on_hit(damage, component, max_process):
 	if process < 100:
 		print("Setting blocked to tru form on hit")
 		
+	#print(process, " last hit by ", component, " and process is ", max_process)
 	process_bar.value = process
+#	
+#	if process == max_process:
+#		print("process_complete now resetting")
+#		label.text = "Done Processing"
+#		hit_blocked = false
+#		if component == "WebServerT1":
+#			request_processed = true
+#		elif component == "DatabaseT1":
+#			dbquery_processed = true
+#		yield(get_tree().create_timer(0.5), "timeout")
+#		label.text = "Travelling"
+		
 
 func impact():
 	randomize()
@@ -131,3 +142,4 @@ func impact():
 
 func on_destroy():
 	queue_free()
+	remove_from_group("phoneclients")

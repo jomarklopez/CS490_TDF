@@ -20,21 +20,10 @@ var time_now = 0
 var time_processed = 1
 var is_timeout = false
 
-var source_connected = false
-var destination_connected = false
-var source_pathname
-var destination_pathname
-var loadbalancer_connection = false
-
 func _ready():
 	if name == "FileGreen":
 		built = true
 		type = "FileGreen"
-		destination_connected = true
-	elif name == "Gateway":
-		built = true
-		type = "Gateway"
-		source_connected = true
 		
 	if built:
 		map_node = get_parent().get_parent()
@@ -78,7 +67,6 @@ func _on_Timer_timeout():
 	label.text = "Processing..."
 	if time_elapsed == time_processed:
 		var current_enemy = queue.pop_front()
-		print(current_enemy[1])
 		map_node.get_node(current_enemy[1]).add_child(current_enemy[0])
 		current_enemy[0].set_offset(10)
 		queue_container.remove_child(queue_container.get_child(1))
@@ -103,20 +91,11 @@ func _on_Timer_timeout():
 	
 func enqueue_enemy():
 	ready = false
-	if type == "Gateway" and destination_pathname:
-		if enemy.reverse and !enemy.gateway_backward_prop:
-			map_node.get_node(path_builder(enemy.source_component, "Gateway")).remove_child(enemy)
-			map_node.get_node("EndPath").add_child(enemy)
-			enemy.set_offset(0)
-			enemy.gateway_backward_prop = true
-		else:
-			map_node.get_node("InitPath").remove_child(enemy)
-			map_node.get_node(destination_pathname).add_child(enemy)
-			enemy.set_offset(40)
-	elif type == "WebServerT1":
+	if type == "WebServerT1":
 		if !enemy.lb_forward_prop:
 			label.text = "Directing request to a server..."
-			map_node.get_node(path_builder(enemy.source_component, "WebServerT1")).remove_child(enemy)
+			map_node.get_node("InitPath").remove_child(enemy)
+			
 			# TODO Code to decide which path to transfer this request to
 			# ROUND ROBIN VS LEAST CONNECTIONS
 			# change db num to randomize number of db
@@ -125,6 +104,7 @@ func enqueue_enemy():
 			var lb_path:String = path_builder(name, "DatabaseT" + str(db_num))
 			
 			map_node.get_node(lb_path).add_child(enemy)
+			
 			enemy.lb_forward_prop = true
 			enemy.blocked = false
 			enemy.set_offset(0)
@@ -132,7 +112,7 @@ func enqueue_enemy():
 		elif enemy.reverse and !enemy.lb_backward_prop:
 			label.text = "Sending back to client..."
 			map_node.get_node(path_builder(enemy.source_component, name)).remove_child(enemy)
-			map_node.get_node(path_builder(name, "Gateway")).add_child(enemy)
+			map_node.get_node("EndPath").add_child(enemy)
 			enemy.lb_backward_prop = true
 			enemy.blocked = false
 			enemy.set_offset(0)
@@ -156,10 +136,7 @@ func enqueue_enemy():
 			queue_nodeview.visible = true
 			
 			enemy.server_backward_prop = true
-			if loadbalancer_connection:
-				queue.append([enemy, path_builder(name, "WebServerT1")])
-			else:
-				queue.append([enemy, path_builder(name, "Gateway")])
+			queue.append([enemy, path_builder(name, "WebServerT1")])
 			
 	elif type == "FileGreen":
 		if enemy.data_read_en and !enemy.data_read:

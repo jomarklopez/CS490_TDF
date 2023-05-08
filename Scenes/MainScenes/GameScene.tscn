@@ -54,23 +54,23 @@ rect_min_size = Vector2( 120, 60 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
 custom_fonts/font = ExtResource( 12 )
 text = "$"
-align = 1
+align = 2
 valign = 1
 
 [node name="Money" type="Label" parent="UI/HUD/InfoBar/H"]
 margin_left = 124.0
-margin_right = 184.0
+margin_right = 234.0
 margin_bottom = 60.0
-rect_min_size = Vector2( 60, 60 )
+rect_min_size = Vector2( 110, 60 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 0.705882 )
 custom_fonts/font = ExtResource( 11 )
 text = "15"
+align = 2
 valign = 1
 
 [node name="Icon" type="TextureRect" parent="UI/HUD/InfoBar/H"]
-visible = false
-margin_left = 188.0
-margin_right = 248.0
+margin_left = 238.0
+margin_right = 298.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 60, 0 )
 size_flags_horizontal = 0
@@ -78,7 +78,6 @@ texture = ExtResource( 13 )
 expand = true
 
 [node name="HP" type="TextureProgress" parent="UI/HUD/InfoBar/H"]
-visible = false
 margin_left = 302.0
 margin_top = 15.0
 margin_right = 702.0
@@ -95,8 +94,8 @@ nine_patch_stretch = true
 [node name="Tween" type="Tween" parent="UI/HUD/InfoBar/H/HP"]
 
 [node name="Control" type="Control" parent="UI/HUD/InfoBar/H"]
-margin_left = 188.0
-margin_right = 258.0
+margin_left = 706.0
+margin_right = 776.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 70, 0 )
 
@@ -133,7 +132,7 @@ texture_normal = ExtResource( 8 )
 texture_pressed = ExtResource( 7 )
 expand = true
 
-[node name="Levels" type="TextureButton" parent="UI/HUD/GameControls"]
+[node name="SpeedUp" type="TextureButton" parent="UI/HUD/GameControls"]
 visible = false
 margin_left = 164.0
 margin_right = 234.0
@@ -231,7 +230,7 @@ text = "0"
 [connection signal="pressed" from="UI/HUD/GameControls/RestartLevel" to="UI" method="_on_TextureButton_pressed"]
 [connection signal="pressed" from="UI/HUD/GameControls/RestartLevel" to="UI" method="_on_RestartLevel_pressed"]
 [connection signal="pressed" from="UI/HUD/GameControls/PausePlay" to="UI" method="_on_PausePlay_pressed"]
-[connection signal="pressed" from="UI/HUD/GameControls/Levels" to="UI" method="_on_SpeedUp_pressed"]
+[connection signal="pressed" from="UI/HUD/GameControls/SpeedUp" to="UI" method="_on_SpeedUp_pressed"]
 [connection signal="mouse_entered" from="UI/HUD/BuildBar/WebServer" to="." method="_on_WebServer_mouse_entered"]
 [connection signal="mouse_exited" from="UI/HUD/BuildBar/WebServer" to="." method="_on_WebServer_mouse_exited"]
 [connection signal="mouse_entered" from="UI/HUD/BuildBar/Database" to="." method="_on_Database_mouse_entered"]
