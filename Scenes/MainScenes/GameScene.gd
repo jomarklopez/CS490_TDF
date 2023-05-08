@@ -14,14 +14,15 @@ var tower_type
 
 var connect_linepreview:Line2D
 var wave_start = false
-var current_wave = 0
+var current_lvl = 0
+var current_wave
 var enemies_in_wave = 0
 var pointer_normal = load("res://Assets/UI/cursor_pointer3D_shadow.png")
 var pointer_connect = load("res://Assets/UI/blue_boxTick.png")
 
 var base_health = 100
 var player_score = 0
-var player_money = 15
+var player_money = 0
 
 var component_hovered:TextureButton
 var tooltip_label:Label
@@ -41,16 +42,8 @@ var componentsmenu = PopupMenu.new()
 var components = ["Load Balancer", "Server"]
 
 func _ready():
-	map_node = get_node("Map1") ## Turn this into variable based on selected map
-	map_node.get_node("Components").get_node("FileGreen").add_to_group("components_group")
-	components_group = get_tree().get_nodes_in_group("components_group")
-	
-	var	path_node:Path2D = map_node.get_node("InitPath")
-	var	line_node:Line2D = map_node.get_node("Line2D")
-	line_node.points = path_node.curve.get_baked_points()
-	line_node.width = 5
-	line_node.set_default_color(Color("ffffff"))
-	
+	# first level
+	reload_level()
 	for i in get_tree().get_nodes_in_group("build_buttons"):
 		i.connect("pressed", self, "initiate_build_mode", [i.get_name()])
 	
@@ -70,6 +63,37 @@ func _ready():
 	connect_linepreview.z_index = 1
 	get_tree().get_root().add_child(connect_linepreview)
 	
+func init_map():
+	
+	map_node.get_node("Components").get_node("FileGreen").add_to_group("components_group")
+	map_node.get_node("Components").get_node("Gateway").add_to_group("components_group")
+	components_group = get_tree().get_nodes_in_group("components_group")
+	
+	var	path_node:Path2D = map_node.get_node("InitPath")
+	var	line_node:Line2D = map_node.get_node("Line2D")
+	line_node.points = path_node.curve.get_baked_points()
+	line_node.width = 5
+	line_node.set_default_color(Color("ffffff"))
+
+func reload_level():
+		
+	print("Loading lvl ", current_lvl)
+	if map_node:
+		map_node.queue_free()
+		var new_map = load("res://Scenes/Maps/Map1.tscn").instance()
+		self.add_child(new_map)
+		map_node = new_map
+	else:
+		map_node = get_node("Map1")
+	init_map()
+	var lvl_wave = GameData.level_data[current_lvl]["wave_number"]
+	var lvl_money = GameData.level_data[current_lvl]["player_money"]
+	current_wave = lvl_wave
+	player_money = lvl_money
+	
+	get_node("UI/HUD/GameControls/PausePlay").pressed = false
+	get_node("UI").update_money_label(player_money)
+		
 func _input(event):
 	if event is InputEventMouseMotion:
 		_last_mouse_position = get_viewport().get_mouse_position()
@@ -123,20 +147,13 @@ func _process(delta):
 		connect_linepreview.points = [connect_source.global_position, _last_mouse_position]
 		if connect_source.name == "FileGreen":
 			connect_linepreview.default_color = (Color("7dbaf2"))
-	
+
 	if component_hovered:
 		tooltip_label.rect_position = get_viewport().get_mouse_position() + Vector2(20, 30)	
 		tooltip_bg.rect_size = tooltip_label.get_minimum_size() + Vector2(10, 10) # Add some padding to the size of the container
 		tooltip_bg.rect_position = tooltip_label.get_position() - Vector2(5, 2.5) # Position the container behind the label
 	
 	components_group = get_tree().get_nodes_in_group("components_group")
-	# WAVE CLEAR
-	if get_tree().get_nodes_in_group("phoneclients").size() == 0 and wave_start:
-		get_node("UI/HUD/GameControls/PausePlay").pressed = false
-		wave_start = false
-		player_money += 2.5
-		get_node("UI").update_money_label(player_money)
-		
 		
 ##
 ##	Wave Functions
@@ -151,14 +168,13 @@ func retrieve_wave_data():
 	var wave_data = []
 	for i in range(current_wave*5):
 		wave_data.append(["PhoneClient", rng.randf_range(0.10, 0.80)])
-
-	current_wave += 1
 	enemies_in_wave = wave_data.size()
 	return wave_data
 	
 func spawn_enemies(wave_data):
 	for enemy_data in wave_data:
 		var new_enemy = load("res://Scenes/Enemies/" + enemy_data[0] + ".tscn").instance()
+		new_enemy.add_to_group("phoneclients")
 		new_enemy.connect("score_modify", self, 'on_score_modify')
 		map_node.get_node("InitPath").add_child(new_enemy, true) 
 		new_enemy.set_z_index(2)
@@ -167,7 +183,6 @@ func spawn_enemies(wave_data):
 			bol = false    
 		new_enemy.data_read_en = bol
 		yield(get_tree().create_timer(enemy_data[1]), "timeout")
-	wave_start = true
 	
 ##
 ##	Building Functions
@@ -243,11 +258,12 @@ func verify_and_connect():
 	print("clicked on ", closest_component)
 	if not connect_source:
 		connect_source = closest_component
-		# build line
 	else:
 		connect_destination = closest_component
 		build_path2d(connect_source, connect_destination)
 		build_path2d(connect_destination, connect_source)
+		connect_destination.source_connected = true
+		connect_source.destination_connected = true
 		cancel_connect_mode()
 	# second left click for destination and then verify connection
 	
@@ -262,8 +278,11 @@ func build_path2d(source:Node2D, destination:Node2D):
 	var path_name:String = source.name + "_" + destination.name + "_Path2D"
 	new_path.set_name(path_name)
 	
+	source.source_pathname = destination.name + "_" + source.name + "_Path2D"
+	source.destination_pathname = path_name
 	var new_line = Line2D.new()
 	var line_name:String = source.name + "_" + destination.name + "_Line2D"
+	
 	new_line.set_name(line_name)
 	new_line.width = 5
 	new_line.set_default_color(Color("ffffff"))
@@ -281,9 +300,10 @@ func build_path2d(source:Node2D, destination:Node2D):
 	map_node.add_child(new_path)
 	
 	print("Connected ", source.name, " to ", destination.name)
+	if "WebServer" in source.name and "Database" in destination.name:
+		destination.loadbalancer_connection = true
 	paths.append([source.name, destination.name])
-	
-	
+		
 func cancel_connect_mode():
 	connect_mode = false
 	connect_source = null
@@ -293,7 +313,17 @@ func cancel_connect_mode():
 	if connect_linepreview:
 		connect_linepreview.points = []
 
-func score_modify(score):
+func on_score_modify(score):
+	# WAVE CLEAR
+	print("MODIFYING SCORE")
+	if get_tree().get_nodes_in_group("phoneclients").size() == 0 and wave_start:
+		print("WAVE CLEARED!")
+		get_node("UI/HUD/GameControls/PausePlay").pressed = false
+		wave_start = false
+		get_node("UI").update_money_label(player_money)
+		current_lvl += 1
+		reload_level()
+		
 	player_score += score
 	get_node("UI").update_points_label(player_score)
 

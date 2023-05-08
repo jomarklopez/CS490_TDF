@@ -39,26 +39,20 @@ func update_tower_preview(new_position, color):
 func _on_PausePlay_pressed():
 	if get_parent().build_mode:
 		get_parent().cancel_build_mode()
+		
 	if get_tree().is_paused():
 		get_tree().paused = false
-	elif !get_parent().wave_start:
-		get_parent().current_wave += 1
+	elif get_tree().get_nodes_in_group("phoneclients").size() == 0 and !get_parent().wave_start:
+		print("STARTING WAVE")
+		get_parent().wave_start = true
 		get_parent().start_next_wave()
 	else:
 		get_tree().paused = true
 
-func _on_SpeedUp_pressed():
-	if get_parent().build_mode:
-		get_parent().cancel_build_mode()
-		
-	if Engine.get_time_scale() == 2.0:
-		Engine.set_time_scale(1.0)
-	else:
-		Engine.set_time_scale(2.0)
-
 func _on_RestartLevel_pressed():
 	# TODO change to repeat level instead
-	get_tree().change_scene("res://Scenes/MainScenes/GameScene.tscn")
+	get_parent().reload_level()
+	get_parent().wave_start = false
 	
 func update_health_bar(base_health):
 	hp_bar_tween.interpolate_property(hp_bar, 'value', hp_bar.value, base_health, 0.1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
